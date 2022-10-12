@@ -1,0 +1,22 @@
+{
+  "name": "react-node-backend-app",
+  "version": "1.0.0",
+  "description": "[see site](https://www.freecodecamp.org/news/how-to-create-a-react-app-with-a-node-backend-the-complete-guide/)",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "rm package-lock.json && npm i && cd client && rm package-lock.json && npm i",
+    "server": "node server/index.js",
+    "client:dev": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "prod": "npm run install:all && npm run build && npm run server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": "16.17.1"
+  }
+}
