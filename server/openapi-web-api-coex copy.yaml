@@ -1,0 +1,293 @@
+openapi: '3.0.2'
+info:
+  title: API demo portal
+  version: 1.0.0
+  description: API demo portal
+servers:
+  - url: http://localhost:4010
+tags:
+  - name: Product
+    description: Operations of product
+  - name: Supplier
+    description: Operations of supplier
+paths:
+  /products:
+    get:
+      #security:
+      #  - oauth2_oauth: [read]
+      tags:
+        - Product
+      summary: List of products
+      description: List of products
+      operationId: getProducts
+      parameters:
+        - $ref: "#/components/parameters/pageSize"
+      responses: # list of responses
+        200:
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: "#/components/schemas/Products"
+        403:
+          $ref: "#/components/responses/403ApiError" 
+        404:
+          description: List of product empty
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: List of product empty
+  /product/{id}:
+    get:
+      tags:
+        - Product
+      summary: Product details
+      description: Product details
+      operationId: getProductId
+      parameters:
+        - name: id 
+          in: path
+          description: Id of the product
+          required: true
+          example: BMS001
+          schema:
+            type: string
+      responses: # list of responses
+        200:
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: "#/components/schemas/Product"
+ 
+        403:
+          $ref: "#/components/responses/403ApiError" 
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 404
+                  message:
+                    type: string
+                    example: Product not found
+  /product:
+    post:
+      tags:
+        - Product
+      summary: Creation of product
+      description: Creation of product
+      operationId: createProduct
+      requestBody:
+        description: Product to create
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Product"
+                - type: object
+              required:
+                - productId
+                - description
+                - category
+                - status
+                - eanCode
+      responses: # list of responses
+        201:
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: "#/components/schemas/Product"
+        403:
+          $ref: "#/components/responses/403ApiError"
+    patch:
+      tags:
+        - Product
+      summary: Update partial properties in Product
+      description: Update partial properties in Product
+      operationId: UpdatePartialProduct
+      requestBody:
+        description: Partial product
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Product"
+                - type: object
+              required:
+                - productId
+            example:
+              productId: BMS001
+              status: Not usable
+
+      responses: # list of responses
+        201:
+          description: Success
+          content:
+            application/json: # operation response mime type
+              schema: # response schema can be specified for each response
+                $ref: "#/components/schemas/Product"
+        403:
+          $ref: "#/components/responses/403ApiError"
+
+components:
+  ##securitySchemes:
+  ## basic_auth: # Arbitrary name
+  ##  type: http
+  ##  scheme: basic
+  ## oauth2_auth: # Arbitrary name
+  ##  type: oauth2
+  ##  flows:
+  ##    password:
+  ##      tokenUrl: https://serverOauth2/getToken.example.com
+  ##      scopes:
+  ##        read: For reading
+  ##        write: For writing
+          
+  schemas:
+    Supplier: 
+      required:
+        - supplierId
+        - name
+      type: object
+      properties:
+        supplierId:
+          description: Supplier  id
+          type: string
+          #example: FR051
+        name:
+          description: Name
+          type: string
+          #example: Cycleurope
+      example:
+        - supplierId: 'NA052'
+          name: 'Mitsu Manufacturing USA'
+        - supplierId: 'ES051'
+          name: 'Rotor Bike Components'
+    Product:
+      type: object
+      description: Product
+      properties:
+        productId:
+          description: Product id 
+          type: string
+          example: BMS001
+        description:
+          description: Description
+          type: string
+          example: 3 Sprockets
+        category:
+          description: Category
+          type: string
+          example: BMSOL
+        status:
+          description: Product status
+          type: string
+          enum: 
+            - Active
+            - In development
+            - On shortage
+            - Not renewed
+            - Obsolete
+            - Not usable
+          example: Active
+        eanCode:
+          description: EAN code
+          type: string
+          example: '3782940542087'
+        searchKey:
+          description: Search key
+          type: string
+          example: STRE
+        suppliers:
+          description: Suppliers of Product
+          type: array
+          items:
+            $ref: "#/components/schemas/Supplier"
+          example:
+            - supplierId: DE053
+              name: Mifa Fahrrad AG
+            - supplierId: FR051
+              name: Rotor Bike Components 
+    Products:
+      type: array
+      items:
+        $ref: "#/components/schemas/Product"
+      example:
+        - productId: BMS005
+          description: 2 Chainwheels
+          category: BMSOL
+          status: Active
+          eanCode: '3782940199615'
+          searchKey: STRE
+          suppliers:
+            - supplierId: DE053
+              name: Mifa Fahrrad AG
+            - supplierId: FR051
+              name: Cycleurope 
+        - productId: BMS033
+          description: Children s bicycle hub-Road
+          category: BMSOL
+          status: Active
+          eanCode: '3782940542094'
+          searchKey: ''
+          suppliers:
+            - supplierId: FR052
+              name: OnicIndus
+            - supplierId: NA052
+              name: Mitsu Manufacturing USA  
+         
+  parameters:
+    pageSize:
+      in: query
+      name: pageSize
+      description: Number of results in the page
+      required: false
+      schema:
+        type: integer
+        example: 10
+        maximum: 100   
+  responses:
+    403ApiError:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 403
+              message:
+                type: string
+                example: Forbidden
+    500ApiError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              statusCode:
+                type: integer
+                example: 500
+              message:
+                type: string
+                example: Internal Server Error
+#security:
+  #- basic_auth: [] # empty
+
