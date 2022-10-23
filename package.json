@@ -7,7 +7,7 @@
     "start": "concurrently \"npm run server:api\" \"cd client && npm start\"",
     "clear": "rm -rf ./node_modules && rm package-lock.json && cd client && rm -rf ./node_modules && rm package-lock.json",
     "postinstall": "cd client && npm i",
-    "server:api": "prism mock ./server/e-procurement.yaml -p 3000",
+    "server:api": "prism mock ./server/e-procurement.yaml -p 3001",
     "server:react": "npm run build && serve ./client/build/",
     "build": "cd client && npm run build",
     "prod": "concurrently \"npm run server:api\" \"npm run server:react\""
@@ -20,8 +20,5 @@
     "concurrently": "^7.4.0",
     "express": "^4.18.2",
     "serve": "^14.0.1"
-  },
-  "engines": {
-    "node": "16.17.1"
   }
 }
