@@ -1,0 +1,189 @@
+openapi: 3.0.0
+tags:
+  - name: products
+    description: Products
+x-stoplight:
+  id: 80o1yi82d2urj
+info:
+  title: e-procurement
+  version: "1.0"
+  contact:
+    name: Sage
+  description: |
+    # Sample e-procurment
+    - Products
+servers:
+  - url: "http://localhost:3000"
+components:
+  schemas:
+    ProductCategory:
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        bought:
+          type: string
+          enum:
+            - "no"
+            - "yes"
+        sold:
+          type: string
+          enum:
+            - "no"
+            - "yes"
+      x-examples:
+        example-1:
+          id: BMSOL
+          description: Purchased/Manufactured/Sold
+          bought: "yes"
+          sold: "no"
+    Product:
+      title: Product
+      x-stoplight:
+        id: 87z6sz5xl6la4
+      type: object
+      x-examples:
+        example-1:
+          $ref: "#/components/examples/product1"
+      description: ""
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          $ref: "#/components/schemas/ProductCategory"
+        type:
+          type: string
+          enum:
+            - stockManagement
+            - consumable
+            - service
+        sealesPrice:
+          type: number
+        salesTax:
+          type: string
+          enum:
+            - 20% (Bien)
+            - 0% EXO (Bien)
+            - 20% (Service)
+            - 0% EXO (Service)
+        cost:
+          type: number
+        purchasings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductPurchasing"
+    ProductPurchasing:
+      title: ProductPurchasing
+      x-stoplight:
+        id: upea12mxzivzs
+      type: object
+      properties:
+        idSupplier:
+          type: string
+        productSupplier:
+          type: string
+        quantity:
+          type: number
+        price:
+          type: number
+      x-examples:
+        example-1:
+          idSupplier: Cycleurope
+          productSupplier: CYCBMS005
+          quantity: 1000
+          price: 5
+        example-2:
+          idSupplier: OnicIndus
+          productSupplier: ONIBMS005
+          quantity: 2000
+          price: 4.5
+  examples:
+    product1:
+      value:
+        {
+          "id": "BMS005",
+          "name": "2 Chainwheels",
+          "category":
+            {
+              "id": "BMSOL",
+              "description": "Purchased/Manufactured/Sold",
+              "bought": "yes",
+              "sold": "yes",
+            },
+          "type": "stockManagement",
+          "sealesPrice": 100,
+          "salesTax": "20% (Bien)",
+          "cost": 10,
+          "purchasings":
+            [
+              {
+                "idSupplier": "Cycleurope",
+                "productSupplier": "CYCBMS005",
+                "quantity": 1000,
+                "price": 5,
+              },
+              {
+                "idSupplier": "OnicIndus",
+                "productSupplier": "ONIBMS005",
+                "quantity": 2000,
+                "price": 4.5,
+              },
+            ],
+        }
+    product2:
+      value:
+        {
+          "id": "BMS005BIS",
+          "name": "2 Chainwheels",
+          "category":
+            {
+              "id": "BMSOL",
+              "description": "Purchased/Manufactured/Sold",
+              "bought": "yes",
+              "sold": "yes",
+            },
+          "type": "stockManagement",
+          "sealesPrice": 100,
+          "salesTax": "20% (Bien)",
+          "cost": 10,
+          "purchasings":
+            [
+              {
+                "idSupplier": "Cycleurope",
+                "productSupplier": "CYCBMS005",
+                "quantity": 1000,
+                "price": 5,
+              },
+              {
+                "idSupplier": "OnicIndus",
+                "productSupplier": "ONIBMS005",
+                "quantity": 2000,
+                "price": 4.5,
+              },
+            ],
+        }
+paths:
+  /products:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - products
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+              example:
+                allOf:
+                  - $ref: "#/components/examples/product1"
+                  - $ref: "#/components/examples/product2"
+      operationId: get-products
+      description: List of products

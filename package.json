@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm run server:api\" \"cd client && npm start\"",
-    "postinstall": "npm i ./client",
-    "server:api": "prism mock ./server/openapi-oma.yaml",
+    "clear": "rm -rf ./node_modules && rm package-lock.json && cd client && rm -rf ./node_modules && rm package-lock.json",
+    "postinstall": "cd client && npm i",
+    "server:api": "prism mock ./server/e-procurement.yaml -p 3000",
     "server:react": "npm run build && serve ./client/build/",
     "build": "cd client && npm run build",
     "prod": "concurrently \"npm run server:api\" \"npm run server:react\""
@@ -16,8 +17,11 @@
   "license": "ISC",
   "dependencies": {
     "@stoplight/prism-cli": "^4.10.5",
-    "client": "file:client",
     "concurrently": "^7.4.0",
+    "express": "^4.18.2",
     "serve": "^14.0.1"
+  },
+  "engines": {
+    "node": "16.17.1"
   }
 }

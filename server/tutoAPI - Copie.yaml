@@ -1,0 +1,148 @@
+openapi: 3.0.0
+x-stoplight:
+  id: ja0a3xj50q55n
+info:
+  title: tutoAPI
+  version: '1.0'
+  description: |-
+    # Api description
+    - Good tutorial
+    - very good tutorial
+  contact:
+    name: Contact OMA
+servers:
+  - url: 'http://localhost:4010'
+    description: exemple server
+paths:
+  /tutorials:
+    get:
+      summary: GET All Tutorials
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tutorials'
+              examples:
+                example-1:
+                  value:
+                    - id: 1
+                      title: Demo tutorial
+                      body: This is sample body
+                      author: admin
+                    - id: 2
+                      title: Demo tutorial 2
+                      body: This is sample body 2
+                      author: admin2
+      operationId: get-tutorials
+    post:
+      summary: Add Tutorials
+      operationId: post-tutorials
+      responses:
+        '201':
+          description: Created
+      description: Description post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tutorials'
+            examples:
+              example-1:
+                value:
+                  - id: 1
+                    title: Demo tutorial
+                    body: This is sample body
+                    author: admin
+  '/tutorials/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: GET a specific Tutorial
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tutorials'
+      operationId: get-tutorials-id
+    post:
+      summary: Add a Tutorial
+      operationId: post-tutorials-id
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Sucessfully added:
+                  value: Msg
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tutorials'
+            examples:
+              example-1:
+                value:
+                  id: 1
+                  title: Demo tutorial
+                  body: This is sample body
+                  author: admin
+    delete:
+      summary: Delete a Tutorial
+      operationId: delete-tutorials-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                Tutorial deleted succesfully:
+                  value: string
+components:
+  schemas:
+    Tutorials:
+      title: Tutorials
+      x-stoplight:
+        id: fz0w39i0hmjcc
+      type: object
+      description: This is Tutorial sample model
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        body:
+          type: string
+        author:
+          type: string
+      x-examples:
+        example-1:
+          id: 1
+          title: Demo Tutorial 1
+          body: sample body 1
+          author: admin1
+  securitySchemes:
+    Security-scheme-basic-http:
+      type: http
+      scheme: basic
+      description: ''
+security:
+  - Security-scheme-basic-http: []
