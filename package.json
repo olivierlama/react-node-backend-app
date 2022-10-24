@@ -4,12 +4,12 @@
   "description": "[see site](https://www.freecodecamp.org/news/how-to-create-a-react-app-with-a-node-backend-the-complete-guide/)",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm run server:api\" \"cd client && npm start\"",
-    "clear": "rm -rf ./node_modules && rm package-lock.json && cd client && rm -rf ./node_modules && rm package-lock.json",
-    "postinstall": "cd client && npm i",
+    "start": "concurrently \"npm run server:api\" \"cd client/ui-react && npm start\"",
+    "clear": "rm -rf ./node_modules && rm package-lock.json && cd client/ui-react && rm -rf ./node_modules && rm package-lock.json",
+    "postinstall": "cd client/ui-react && npm i",
     "server:api": "prism mock ./server/e-procurement.yaml -p 3001",
-    "server:react": "npm run build && serve ./client/build/ -p 4001",
-    "build": "cd client && npm run build",
+    "server:react": "npm run build && serve ./client/ui-react/build/ -p 4001",
+    "build": "cd client/ui-react && npm run build",
     "prod": "concurrently \"npm run server:api\" \"npm run server:react\""
   },
   "keywords": [],
