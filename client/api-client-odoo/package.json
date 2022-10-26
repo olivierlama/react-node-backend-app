@@ -1,0 +1,19 @@
+{
+  "name": "api-client-odoo",
+  "version": "1.0.0",
+  "description": "client odoo",
+  "main": "index.ts",
+  "scripts": {
+    "start": "npm run tsc && node ./build/index.js",
+    "tsc": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async-odoo-xmlrpc": "^2.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
+}
