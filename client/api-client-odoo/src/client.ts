@@ -20,14 +20,37 @@ class Client {
     await this.odoo.connect();
   }
 
-  async query(model: string, filters: Array<Object>, fields: Array<String>) {
+  async query(
+    model: string,
+    filters: Array<Array<String>>,
+    fields: Array<String>,
+    limit: number
+  ) {
     await this.connect();
     if (this.odoo) {
       return await this.odoo.execute_kw(model, "search_read", [
         filters,
         fields, // fields
         0,
-        5, // offset, limit
+        limit, // offset, limit
+      ]);
+    }
+  }
+
+  async read(
+    model: string,
+    nameId: String,
+    valueId: String,
+    fields: Array<String>
+  ) {
+    await this.connect();
+    if (this.odoo) {
+      const filters = [[nameId, "=", valueId]];
+      return await this.odoo.execute_kw(model, "search_read", [
+        filters,
+        fields, // fields
+        0,
+        1, // offset, limit
       ]);
     }
   }

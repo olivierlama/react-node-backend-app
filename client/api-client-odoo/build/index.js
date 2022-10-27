@@ -24,13 +24,19 @@ const config_1 = require("./config");
 const client_1 = __importDefault(require("./client"));
 const client = new client_1.default(config_1.config);
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    //console.log("ol", 1);
     try {
-        //console.log("ol", 2);
         yield client.connect();
         console.log("connect:ok");
-        const filters = [["id", "=", "15"]];
-        // const filters: any = [];
+    }
+    catch (error) {
+        console.log("connect:nok");
+        console.log(error);
+    }
+}))();
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // const filters = [["id", "=", "15"]];
+        const filters = [];
         let res = yield client.query("product.product", filters, [
             "id",
             "price_extra",
@@ -43,13 +49,35 @@ const client = new client_1.default(config_1.config);
             "qty_available",
             "purchased_product_qty",
             "list_price",
-        ]);
-        0;
+        ], 10);
         console.log("Query product:ok");
         console.log(res);
     }
     catch (error) {
-        console.log("nok");
+        console.log("Query product:nok");
+        console.log(error);
+    }
+}))();
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let res = yield client.read("product.product", "id", "15", [
+            "id",
+            "price_extra",
+            "lst_price",
+            "default_code",
+            "code",
+            "active",
+            "standard_price",
+            "display_name",
+            "qty_available",
+            "purchased_product_qty",
+            "list_price",
+        ]);
+        console.log("Read product:ok");
+        console.log(res);
+    }
+    catch (error) {
+        console.log("Read product:nok");
         console.log(error);
     }
 }))();

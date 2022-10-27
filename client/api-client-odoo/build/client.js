@@ -23,7 +23,7 @@ class Client {
             yield this.odoo.connect();
         });
     }
-    query(model, filters, fields) {
+    query(model, filters, fields, limit) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.connect();
             if (this.odoo) {
@@ -31,7 +31,21 @@ class Client {
                     filters,
                     fields,
                     0,
-                    5, // offset, limit
+                    limit, // offset, limit
+                ]);
+            }
+        });
+    }
+    read(model, nameId, valueId, fields) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.connect();
+            if (this.odoo) {
+                const filters = [[nameId, "=", valueId]];
+                return yield this.odoo.execute_kw(model, "search_read", [
+                    filters,
+                    fields,
+                    0,
+                    1, // offset, limit
                 ]);
             }
         });

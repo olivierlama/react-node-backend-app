@@ -18,16 +18,49 @@ import Client from "./client";
 const client = new Client(config);
 
 (async () => {
-  //console.log("ol", 1);
-
   try {
-    //console.log("ol", 2);
     await client.connect();
     console.log("connect:ok");
-    const filters = [["id", "=", "15"]];
-    // const filters: any = [];
+  } catch (error) {
+    console.log("connect:nok");
+    console.log(error);
+  }
+})();
 
-    let res = await client.query("product.product", filters, [
+(async () => {
+  try {
+    // const filters = [["id", "=", "15"]];
+    const filters: Array<Array<String>> = [];
+    let res = await client.query(
+      "product.product",
+      filters,
+      [
+        "id",
+        "price_extra",
+        "lst_price",
+        "default_code",
+        "code",
+        "active",
+        "standard_price",
+        "display_name",
+        "qty_available",
+        "purchased_product_qty",
+        "list_price",
+      ],
+      10
+    );
+
+    console.log("Query product:ok");
+    console.log(res);
+  } catch (error) {
+    console.log("Query product:nok");
+    console.log(error);
+  }
+})();
+
+(async () => {
+  try {
+    let res = await client.read("product.product", "id", "15", [
       "id",
       "price_extra",
       "lst_price",
@@ -40,11 +73,11 @@ const client = new Client(config);
       "purchased_product_qty",
       "list_price",
     ]);
-    0;
-    console.log("Query product:ok");
+
+    console.log("Read product:ok");
     console.log(res);
   } catch (error) {
-    console.log("nok");
+    console.log("Read product:nok");
     console.log(error);
   }
 })();
