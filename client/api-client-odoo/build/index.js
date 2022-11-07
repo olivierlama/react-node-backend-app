@@ -1,5 +1,4 @@
 "use strict";
-// Chaque appel à execute_kwprend les paramètres suivants :
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -13,100 +12,115 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// la base de données à utiliser, une chaîne
-// l'identifiant de l'utilisateur (récupéré via authenticate), un entier
-// le mot de passe de l'utilisateur, une chaîne
-// le nom du modèle, une chaîne
-// le nom de la méthode, une chaîne
-// un tableau/liste de paramètres passés par position
-// un mapping/dict de paramètres à passer par mot clé (optionnel)
+const async_odoo_xmlrpc_1 = __importDefault(require("async-odoo-xmlrpc"));
 const config_1 = require("./config");
-const client_1 = __importDefault(require("./client"));
-const client = new client_1.default(config_1.config);
+const odoo = new async_odoo_xmlrpc_1.default(config_1.config);
+// Logging in
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield client.connect();
-        console.log("connect:ok");
+        yield odoo.connect();
+        console.log("Logging in: OK");
     }
-    catch (error) {
-        console.log("connect:nok");
-        console.log(error);
+    catch (e) {
+        console.log("Logging in: ERROR", e);
     }
 }))();
+// List records
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        // const filters = [["id", "=", "15"]];
-        const filters = [];
-        let res = yield client.query("product.product", filters, [
-            "id",
-            "price_extra",
-            "lst_price",
-            "default_code",
-            "code",
-            "active",
-            "standard_price",
-            "display_name",
-            "qty_available",
-            "purchased_product_qty",
-            "list_price",
-        ], 10);
-        console.log("Query product:ok");
-        console.log(res);
-    }
-    catch (error) {
-        console.log("Query product:nok");
-        console.log(error);
-    }
+    yield odoo.connect();
+    let id = yield odoo.execute_kw("product.product", "search", [
+        [["purchase_ok", "=", true]],
+    ]);
+    console.log("List records - Result: ", id);
 }))();
+// Pagination
+const offset = 1;
+const limit = 2;
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        let res = yield client.read("product.product", "id", "15", [
-            "id",
-            "price_extra",
-            "lst_price",
-            "default_code",
-            "code",
-            "active",
-            "standard_price",
-            "display_name",
-            "qty_available",
-            "purchased_product_qty",
-            "list_price",
-        ]);
-        console.log("Read product:ok");
-        console.log(res);
-    }
-    catch (error) {
-        console.log("Read product:nok");
-        console.log(error);
-    }
+    yield odoo.connect();
+    let id = yield odoo.execute_kw("product.product", "search", [
+        [["purchase_ok", "=", true]],
+        offset,
+        limit,
+    ]);
+    console.log("Pagination - Result: ", id);
 }))();
-//console.log(config);
-// const host = "http://52.210.77.87";
-// const port = 8069;
-// const db = "db-odoo";
-// const username = "admin@admin.com";
-// const password = "3cb0f37dfb972c21473a1649758c3b7dbda63c18";
-//const Odoo = require("async-odoo-xmlrpc");
-// var odoo = new Odoo(config);
-// // Logging in
-// (async () => {
-//   try {
-//     await odoo.connect();
-//     console.log("Connect to Odoo XML-RPC is successed.");
-//   } catch (e) {
-//     console.error("Error when try connect Odoo XML-RPC.", e);
-//   }
-// })();
-// //Search and read
+//Count records
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield odoo.connect();
+    let rs = yield odoo.execute_kw("product.product", "search_count", [
+        [["purchase_ok", "=", true]],
+    ]);
+    console.log("Count records - Result: ", rs);
+}))();
+//Read records
 // (async () => {
 //   await odoo.connect();
-//   let result = await odoo.execute_kw("product.product", "search_read", [
-//     [],
-//     ["name", "list_price"], // fields
+//   let id = await odoo.execute_kw("product.product", "search", [
+//     [["purchase_ok", "=", true]],
 //     0,
-//     5, // offset, limit
+//     1,
 //   ]);
-//   console.log("Result: ", result);
+//   let rs = await odoo.execute_kw("product.product", "read", [id]);
+//   console.log("Read records - Result: ", rs);
 // })();
+//Read records filtered by fields
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    let start = new Date().getTime();
+    yield odoo.connect();
+    let id = yield odoo.execute_kw("product.product", "search", [
+        [["purchase_ok", "=", true]],
+        0,
+        1,
+    ]);
+    let rs = yield odoo.execute_kw("product.product", "read", [
+        id[0],
+        [
+            "id",
+            "price_extra",
+            "lst_price",
+            "default_code",
+            "code",
+            "active",
+            "standard_price",
+            "display_name",
+            "qty_available",
+            "purchased_product_qty",
+            "list_price",
+        ],
+    ]);
+    console.log("During ", new Date().getTime() - start);
+    console.log("Read records filtered by fields - Result: ", rs);
+}))();
+//Search and read
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield odoo.connect();
+    let result = yield odoo.execute_kw("product.product", "search_read", [
+        [["purchase_ok", "=", true]],
+        [
+            "id",
+            "price_extra",
+            "lst_price",
+            "default_code",
+            "code",
+            "active",
+            "standard_price",
+            "display_name",
+            "qty_available",
+            "purchased_product_qty",
+            "list_price",
+        ],
+        0,
+        5, // offset, limit
+    ]);
+    console.log("Search and read - Result: ", result);
+}))();
+//Create records
+(() => __awaiter(void 0, void 0, void 0, function* () {
+    yield odoo.connect();
+    let id = yield odoo.execute_kw("product.product", "create", [
+        { name: "new-name" },
+    ]);
+    console.log("Create records - Result: ", id);
+}))();
 //# sourceMappingURL=index.js.map
