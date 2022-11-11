@@ -1,2 +1,3 @@
 node_modules/
-client/api-client-odoo/build/client.js
+client/api-client-odoo/build/
+client/api-client-odoo/build/
