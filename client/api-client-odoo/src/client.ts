@@ -8,53 +8,59 @@ interface Config {
   password: string;
 }
 
-class Client {
+export default class Client {
   config: Config;
-  odoo: Odoo | undefined;
-  constructor(config: Config) {
+  odoo: Odoo;
+  model: string;
+  constructor(config: Config, model: string) {
     this.config = config;
+    this.odoo = new Odoo(config);
+    this.model = model;
   }
 
-  async connect() {
-    this.odoo = new Odoo(this.config);
+  async toLogin() {
+    try {
+      await this.odoo.connect();
+      return "Logging in: OK";
+    } catch (e) {
+      return "Logging in: ERROR " + e;
+    }
+  }
+
+  // List records
+  async search(filters: Object[], offset = 0, limit = 0) {
     await this.odoo.connect();
+    return await this.odoo.execute_kw(this.model, "search", [
+      filters,
+      offset,
+      limit,
+    ]);
   }
 
-  async query(
-    model: string,
-    filters: Array<Array<String>>,
-    fields: Array<String>,
-    limit: number
-  ) {
-    await this.connect();
-    if (this.odoo) {
-      return await this.odoo.execute_kw(model, "search_read", [
-        filters,
-        fields, // fields
-        0,
-        limit, // offset, limit
-      ]);
-    }
+  // Count records
+  async countSearch(filters: Object[]) {
+    await this.odoo.connect();
+    return await this.odoo.execute_kw(this.model, "search_count", [filters]);
   }
 
-  async read(
-    model: string,
-    nameId: String,
-    valueId: String,
-    fields: Array<String>
-  ) {
-    await this.connect();
-    if (this.odoo) {
-      const filters = [[nameId, "=", valueId]];
-      return await this.odoo.execute_kw(model, "search_read", [
-        filters,
-        fields, // fields
-        0,
-        1, // offset, limit
-      ]);
-    }
+  // Read records ids = [1,2,..]
+  async readIds(ids: string[], fields: string[]) {
+    await this.odoo.connect();
+    return await this.odoo.execute_kw(this.model, "read", [ids, fields]);
+  }
+
+  // Create records
+  async create(fieldsValues: Object[]) {
+    await this.odoo.connect();
+    return await this.odoo.execute_kw(this.model, "create", fieldsValues);
+  }
+  async update(ids: string[], fieldsValues: Object) {
+    await this.odoo.connect();
+    return await this.odoo.execute_kw(this.model, "write", [ids, fieldsValues]);
+  }
+  // Delete records ids = [1,2,..]
+  async deleteIds(ids: string[]) {
+    await this.odoo.connect();
+    return await this.odoo.execute_kw(this.model, "unlink", [ids]);
   }
 }
-
-//const client: Client = new Client(config);
-export default Client;

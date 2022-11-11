@@ -1,126 +1,70 @@
-import Odoo from "async-odoo-xmlrpc";
+import Client from "./client";
 import { config } from "./config";
-interface Config {
-  url: string;
-  port: number;
-  db: string;
-  username: string;
-  password: string;
-}
 
-const odoo = new Odoo(config);
-// Logging in
 (async () => {
-  try {
-    await odoo.connect();
-    console.log("Logging in: OK");
-  } catch (e) {
-    console.log("Logging in: ERROR", e);
-  }
-})();
-// List records
-(async () => {
-  await odoo.connect();
-  let id = await odoo.execute_kw("product.product", "search", [
-    [["purchase_ok", "=", true]],
-  ]);
+  const client = new Client(config, "product.product");
+  // Logging in
+  console.log("Logging in");
+  console.log(await client.toLogin());
+  // Query ids
+  let ids: string[];
+  console.log("Query ids");
+  let filters = [["purchase_ok", "=", true]];
+  ids = await client.search(filters);
+  console.log(ids);
+  let offset = 2;
+  let limit = 3;
+  // Query ids from offset to limit
+  console.log("Query ids from offset to limit");
+  ids = await client.search(filters, offset, limit);
+  console.log(ids);
+  // Count Query
+  console.log("Count Query");
+  console.log(await client.countSearch(filters));
 
-  console.log("List records - Result: ", id);
-})();
+  // ReadIds with all fields
+  //   console.log("ReadIds");
+  //   console.log(await client.ReadIds(ids, []));
 
-// Pagination
-const offset = 1;
-const limit = 2;
-(async () => {
-  await odoo.connect();
-  let id = await odoo.execute_kw("product.product", "search", [
-    [["purchase_ok", "=", true]],
-    offset,
-    limit,
-  ]);
+  // ReadIds with list of fields
+  console.log("ReadIds with list of fields");
+  let fields = [
+    "id",
+    "name",
+    "price_extra",
+    "lst_price",
+    "default_code",
+    "code",
+    "active",
+    "standard_price",
+    "display_name",
+    "qty_available",
+    "purchased_product_qty",
+    "list_price",
+  ];
+  console.log(await client.readIds(ids, fields));
 
-  console.log("Pagination - Result: ", id);
-})();
+  //Create records
+  console.log("Create records");
+  const fieldsValues = [{ name: "new-name" }];
+  let id = await client.create(fieldsValues);
+  console.log(id);
+  console.log("Read record : ", id);
+  console.log(await client.readIds(id, fields));
 
-//Count records
-(async () => {
-  await odoo.connect();
-  let rs = await odoo.execute_kw("product.product", "search_count", [
-    [["purchase_ok", "=", true]],
-  ]);
-  console.log("Count records - Result: ", rs);
-})();
-
-//Read records
-// (async () => {
-//   await odoo.connect();
-//   let id = await odoo.execute_kw("product.product", "search", [
-//     [["purchase_ok", "=", true]],
-//     0,
-//     1,
-//   ]);
-//   let rs = await odoo.execute_kw("product.product", "read", [id]);
-//   console.log("Read records - Result: ", rs);
-// })();
-
-//Read records filtered by fields
-(async () => {
-  let start = new Date().getTime();
-  await odoo.connect();
-  let id = await odoo.execute_kw("product.product", "search", [
-    [["purchase_ok", "=", true]],
-    0,
-    1,
-  ]);
-  let rs = await odoo.execute_kw("product.product", "read", [
-    id[0],
-    [
-      "id",
-      "price_extra",
-      "lst_price",
-      "default_code",
-      "code",
-      "active",
-      "standard_price",
-      "display_name",
-      "qty_available",
-      "purchased_product_qty",
-      "list_price",
-    ],
-  ]);
-  console.log("During ", new Date().getTime() - start);
-  console.log("Read records filtered by fields - Result: ", rs);
-})();
-
-//Search and read
-(async () => {
-  await odoo.connect();
-  let result = await odoo.execute_kw("product.product", "search_read", [
-    [["purchase_ok", "=", true]],
-    [
-      "id",
-      "price_extra",
-      "lst_price",
-      "default_code",
-      "code",
-      "active",
-      "standard_price",
-      "display_name",
-      "qty_available",
-      "purchased_product_qty",
-      "list_price",
-    ], // fields
-    0,
-    5, // offset, limit
-  ]);
-  console.log("Search and read - Result: ", result);
-})();
-
-//Create records
-(async () => {
-  await odoo.connect();
-  let id = await odoo.execute_kw("product.product", "create", [
-    { name: "new-name" },
-  ]);
-  console.log("Create records - Result: ", id);
+  //Update records
+  console.log("Update records");
+  console.log("Update record : ", id);
+  const fieldValue = { name: "new-name updated" };
+  console.log(await client.update(id, fieldValue));
+  console.log("Read record : ", id);
+  console.log(await client.readIds(id, fields));
+  //Delete records
+  console.log("Delete record : ", id);
+  console.log(await client.deleteIds(id));
+  console.log("Read record : ", id);
+  console.log(await client.readIds(id, fields));
+  filters = [["id", "=", id]];
+  console.log("Search record id : ", id);
+  console.log(await client.search(filters));
 })();

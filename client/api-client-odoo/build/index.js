@@ -12,115 +12,69 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const async_odoo_xmlrpc_1 = __importDefault(require("async-odoo-xmlrpc"));
+const client_1 = __importDefault(require("./client"));
 const config_1 = require("./config");
-const odoo = new async_odoo_xmlrpc_1.default(config_1.config);
-// Logging in
 (() => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        yield odoo.connect();
-        console.log("Logging in: OK");
-    }
-    catch (e) {
-        console.log("Logging in: ERROR", e);
-    }
-}))();
-// List records
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield odoo.connect();
-    let id = yield odoo.execute_kw("product.product", "search", [
-        [["purchase_ok", "=", true]],
-    ]);
-    console.log("List records - Result: ", id);
-}))();
-// Pagination
-const offset = 1;
-const limit = 2;
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield odoo.connect();
-    let id = yield odoo.execute_kw("product.product", "search", [
-        [["purchase_ok", "=", true]],
-        offset,
-        limit,
-    ]);
-    console.log("Pagination - Result: ", id);
-}))();
-//Count records
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield odoo.connect();
-    let rs = yield odoo.execute_kw("product.product", "search_count", [
-        [["purchase_ok", "=", true]],
-    ]);
-    console.log("Count records - Result: ", rs);
-}))();
-//Read records
-// (async () => {
-//   await odoo.connect();
-//   let id = await odoo.execute_kw("product.product", "search", [
-//     [["purchase_ok", "=", true]],
-//     0,
-//     1,
-//   ]);
-//   let rs = await odoo.execute_kw("product.product", "read", [id]);
-//   console.log("Read records - Result: ", rs);
-// })();
-//Read records filtered by fields
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    let start = new Date().getTime();
-    yield odoo.connect();
-    let id = yield odoo.execute_kw("product.product", "search", [
-        [["purchase_ok", "=", true]],
-        0,
-        1,
-    ]);
-    let rs = yield odoo.execute_kw("product.product", "read", [
-        id[0],
-        [
-            "id",
-            "price_extra",
-            "lst_price",
-            "default_code",
-            "code",
-            "active",
-            "standard_price",
-            "display_name",
-            "qty_available",
-            "purchased_product_qty",
-            "list_price",
-        ],
-    ]);
-    console.log("During ", new Date().getTime() - start);
-    console.log("Read records filtered by fields - Result: ", rs);
-}))();
-//Search and read
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield odoo.connect();
-    let result = yield odoo.execute_kw("product.product", "search_read", [
-        [["purchase_ok", "=", true]],
-        [
-            "id",
-            "price_extra",
-            "lst_price",
-            "default_code",
-            "code",
-            "active",
-            "standard_price",
-            "display_name",
-            "qty_available",
-            "purchased_product_qty",
-            "list_price",
-        ],
-        0,
-        5, // offset, limit
-    ]);
-    console.log("Search and read - Result: ", result);
-}))();
-//Create records
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield odoo.connect();
-    let id = yield odoo.execute_kw("product.product", "create", [
-        { name: "new-name" },
-    ]);
-    console.log("Create records - Result: ", id);
+    const client = new client_1.default(config_1.config, "product.product");
+    // Logging in
+    console.log("Logging in");
+    console.log(yield client.toLogin());
+    // Query ids
+    let ids;
+    console.log("Query ids");
+    let filters = [["purchase_ok", "=", true]];
+    ids = yield client.search(filters);
+    console.log(ids);
+    let offset = 2;
+    let limit = 3;
+    // Query ids from offset to limit
+    console.log("Query ids from offset to limit");
+    ids = yield client.search(filters, offset, limit);
+    console.log(ids);
+    // Count Query
+    console.log("Count Query");
+    console.log(yield client.countSearch(filters));
+    // ReadIds with all fields
+    //   console.log("ReadIds");
+    //   console.log(await client.ReadIds(ids, []));
+    // ReadIds with list of fields
+    console.log("ReadIds with list of fields");
+    let fields = [
+        "id",
+        "name",
+        "price_extra",
+        "lst_price",
+        "default_code",
+        "code",
+        "active",
+        "standard_price",
+        "display_name",
+        "qty_available",
+        "purchased_product_qty",
+        "list_price",
+    ];
+    console.log(yield client.readIds(ids, fields));
+    //Create records
+    console.log("Create records");
+    const fieldsValues = [{ name: "new-name" }];
+    let id = yield client.create(fieldsValues);
+    console.log(id);
+    console.log("Read record : ", id);
+    console.log(yield client.readIds(id, fields));
+    //Update records
+    console.log("Update records");
+    console.log("Update record : ", id);
+    const fieldValue = { name: "new-name updated" };
+    console.log(yield client.update(id, fieldValue));
+    console.log("Read record : ", id);
+    console.log(yield client.readIds(id, fields));
+    //Delete records
+    console.log("Delete record : ", id);
+    console.log(yield client.deleteIds(id));
+    console.log("Read record : ", id);
+    console.log(yield client.readIds(id, fields));
+    filters = [["id", "=", id]];
+    console.log("Search record id : ", id);
+    console.log(yield client.search(filters));
 }))();
 //# sourceMappingURL=index.js.map

@@ -4,8 +4,10 @@
   "description": "client odoo",
   "main": "index.ts",
   "scripts": {
-    "start": "npm run tsc && node ./build/index.js",
-    "tsc": "tsc"
+    "start": "npm run build && node ./build/index.js",
+    "build": "npm run tsc",
+    "tsc": "tsc",
+    "test:login": "npm run build && node ./build/login.js"
   },
   "keywords": [],
   "author": "",

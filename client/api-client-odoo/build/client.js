@@ -14,43 +14,67 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const async_odoo_xmlrpc_1 = __importDefault(require("async-odoo-xmlrpc"));
 class Client {
-    constructor(config) {
+    constructor(config, model) {
         this.config = config;
+        this.odoo = new async_odoo_xmlrpc_1.default(config);
+        this.model = model;
     }
-    connect() {
+    toLogin() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.odoo = new async_odoo_xmlrpc_1.default(this.config);
+            try {
+                yield this.odoo.connect();
+                return "Logging in: OK";
+            }
+            catch (e) {
+                return "Logging in: ERROR " + e;
+            }
+        });
+    }
+    // List records
+    search(filters, offset = 0, limit = 0) {
+        return __awaiter(this, void 0, void 0, function* () {
             yield this.odoo.connect();
+            return yield this.odoo.execute_kw(this.model, "search", [
+                filters,
+                offset,
+                limit,
+            ]);
         });
     }
-    query(model, filters, fields, limit) {
+    // Count records
+    countSearch(filters) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.connect();
-            if (this.odoo) {
-                return yield this.odoo.execute_kw(model, "search_read", [
-                    filters,
-                    fields,
-                    0,
-                    limit, // offset, limit
-                ]);
-            }
+            yield this.odoo.connect();
+            return yield this.odoo.execute_kw(this.model, "search_count", [filters]);
         });
     }
-    read(model, nameId, valueId, fields) {
+    // Read records ids = [1,2,..]
+    readIds(ids, fields) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.connect();
-            if (this.odoo) {
-                const filters = [[nameId, "=", valueId]];
-                return yield this.odoo.execute_kw(model, "search_read", [
-                    filters,
-                    fields,
-                    0,
-                    1, // offset, limit
-                ]);
-            }
+            yield this.odoo.connect();
+            return yield this.odoo.execute_kw(this.model, "read", [ids, fields]);
+        });
+    }
+    // Create records
+    create(fieldsValues) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.odoo.connect();
+            return yield this.odoo.execute_kw(this.model, "create", fieldsValues);
+        });
+    }
+    update(ids, fieldsValues) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.odoo.connect();
+            return yield this.odoo.execute_kw(this.model, "write", [ids, fieldsValues]);
+        });
+    }
+    // Delete records ids = [1,2,..]
+    deleteIds(ids) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.odoo.connect();
+            return yield this.odoo.execute_kw(this.model, "unlink", [ids]);
         });
     }
 }
-//const client: Client = new Client(config);
 exports.default = Client;
 //# sourceMappingURL=client.js.map
