@@ -2,6 +2,7 @@
   "name": "react-node-backend-app",
   "version": "1.0.0",
   "description": "backend server)",
+  "private": "true",
   "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm run server:api-mock\" \"cd client/api-client-odoo && npm start\"",
@@ -10,18 +11,27 @@
     "clear:client-ui-react": "cd client/ui-react && rm -rf ./node_modules && rm package-lock.json",
     "clear:client-api-client-odoo": "cd client/api-client-odoo && rm -rf ./node_modules && rm package-lock.json",
     "postinstall": "cd client/ui-react && npm i && cd ../api-client-odoo && npm i",
-    "server:api-rest": "node server/index.js",
     "server:api-mock": "prism mock ./server/e-procurement.yaml -p 3001",
     "server:react": "npm run build && serve ./client/ui-react/build/ -p 4001",
     "build": "cd client/ui-react && npm run build",
-    "prod": "concurrently \"npm run server:api-mock\" \"npm run server:react\""
+    "prod": "concurrently \"npm run server:api-mock\" \"npm run server:react\"",
+    "server-api:dev": "concurrently \"tsc --watch\" \"nodemon -q server-api/dist/index.js\"",
+    "server-api:build": "tsc",
+    "server-api:prod": "npm run server-api:build && node server-api/dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@stoplight/prism-cli": "^4.10.5",
-    "concurrently": "^7.4.0",
+    "express": "^4.18.2",
     "serve": "^14.0.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/node": "^16.18.3",
+    "concurrently": "^7.5.0",
+    "nodemon": "^2.0.20",
+    "typescript": "^4.8.4"
   }
 }

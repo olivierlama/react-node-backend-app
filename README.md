@@ -1,7 +1,9 @@
 # react-node-app
 
-[see site](https://www.freecodecamp.org/news/how-to-create-a-react-app-with-a-node-backend-the-complete-guide/)
+[see site for starting](https://www.freecodecamp.org/news/how-to-create-a-react-app-with-a-node-backend-the-complete-guide/)
 
-Creation REST server for execute ODOO api
-[see site](https://www.alsacreations.com/tuto/lire/1857-Creation-dune-API-REST-avec-Express-et-TypeScript.html)
-[see site](https://blog.logrocket.com/build-rest-api-typescript-using-native-modules/)
+[execute nodejs with pm2](https://medium.com/@engr.mmohsin/how-to-host-nodejs-on-windows-server-e9bd38b6b6d5)
+
+[Site pm2](https://pm2.keymetrics.io/docs/usage/quick-start//)
+
+[express+typescript+without webpack](https://blog.logrocket.com/how-to-set-up-node-typescript-express/)
