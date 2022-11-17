@@ -7,3 +7,5 @@
 [Site pm2](https://pm2.keymetrics.io/docs/usage/quick-start//)
 
 [express+typescript+without webpack](https://blog.logrocket.com/how-to-set-up-node-typescript-express/)
+
+[creation REST api](https://auth0.com/blog/node-js-and-typescript-tutorial-build-a-crud-api)
