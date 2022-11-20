@@ -1,4 +1,5 @@
 node_modules/
-server-api/
 client/api-client-odoo/build/
 client/api-client-odoo/build/
+build/
+src/server-api/config.json
