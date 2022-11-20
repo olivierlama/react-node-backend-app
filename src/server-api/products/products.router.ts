@@ -74,6 +74,26 @@ productsRouter.get("/name/:name", async (req: Request, res: Response) => {
     res.status(500).send(e.message);
   }
 });
+
+productsRouter.get(
+  "/vendor/partner_id/:partner_id",
+  async (req: Request, res: Response) => {
+    try {
+      const partner_id = req.params.partner_id;
+      console.log("partner_id", partner_id);
+
+      console.log("ProductService.read()", "start");
+      const product: Product = await ProductService.readVendorByFieldNameString(
+        "partner_id",
+        partner_id
+      );
+      console.log("ProductService.read()", "end");
+      res.status(200).send(product);
+    } catch (e: any) {
+      res.status(500).send(e.message);
+    }
+  }
+);
 // POST items
 
 // PUT items/:id
