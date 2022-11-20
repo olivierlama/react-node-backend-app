@@ -50,12 +50,29 @@ export default class Client {
   }
 
   // Search and Read records ids = [1,2,..] with other fields
-  async searchAndReadDetail(filters: Object[], fields: string[]) {
+  async searchAndReadDetail(
+    filters: Object[],
+    fields: Object[],
+    offset = 0,
+    limit = 0
+  ) {
     await this.odoo.connect();
+    // console.log(filters);
+
+    // filters = [];
+    // console.log(filters);
     return await this.odoo.execute_kw(this.model, "search_read", [
       filters,
       fields,
+      offset,
+      limit,
     ]);
+    // models.execute_kw(db, uid, password, 'res.partner', 'search_read', [[['is_company', '=', True]]], {'fields': ['name', 'country_id', 'comment'], 'limit': 5})
+  }
+  // Search and Read records ids = [1,2,..] with other fields
+  async searchAndReadDetailAllFields(filters: Object[]) {
+    await this.odoo.connect();
+    return await this.odoo.execute_kw(this.model, "search_read", [filters, []]);
     // models.execute_kw(db, uid, password, 'res.partner', 'search_read', [[['is_company', '=', True]]], {'fields': ['name', 'country_id', 'comment'], 'limit': 5})
   }
   // Create records
