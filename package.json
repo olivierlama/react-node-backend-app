@@ -10,7 +10,6 @@
     "postclear": "npm run clear:client-ui-react && npm run clear:client-api-client-odoo",
     "clear:client-ui-react": "cd client/ui-react && rm -rf ./node_modules && rm package-lock.json",
     "clear:client-api-client-odoo": "cd client/api-client-odoo && rm -rf ./node_modules && rm package-lock.json",
-    "postinstall": "cd client/ui-react && npm i && cd ../api-client-odoo && npm i",
     "server:api-mock": "prism mock ./server/e-procurement.yaml -p 3001",
     "server:react": "npm run build && serve ./client/ui-react/build/ -p 4001",
     "build": "cd client/ui-react && npm run build",
