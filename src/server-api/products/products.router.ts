@@ -94,6 +94,23 @@ productsRouter.get(
     }
   }
 );
+
+productsRouter.get("/vendor/id/:id", async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id;
+    console.log("id", id);
+
+    console.log("ProductService.read()", "start");
+    const product: Product = await ProductService.readVendorByFieldNameString(
+      "id",
+      id
+    );
+    console.log("ProductService.read()", "end");
+    res.status(200).send(product);
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
+});
 // POST items
 
 // PUT items/:id
