@@ -1,8 +1,7 @@
 /**
  * Data Model Interfaces
  */
-import { BaseProduct, Product } from "./product.interface";
-import { Products } from "./products.interface";
+import { BaseProduct, Product } from "./product";
 import config from "../config.json";
 import Client from "../api-client-odoo/client";
 
@@ -16,29 +15,16 @@ import Client from "../api-client-odoo/client";
 
 //export const findAll = async (): Promise<Item[]> => Object.values(items);
 // Search and Read records ids = [1,2,..] with other fields
-export const query = async (offset = 0, limit = 0): Promise<Products> => {
-  // const fields = [
-  //   "id",
-  //   "name",
-  //   "price_extra",
-  //   "lst_price",
-  //   "default_code",
-  //   "code",
-  //   "active",
-  //   "standard_price",
-  //   "display_name",
-  //   "qty_available",
-  //   "purchased_product_qty",
-  //   "list_price",
-  // ];
-  const fields: Object[] = [];
+export const query = async (offset = 0, limit = 0): Promise<Product[]> => {
+  const product = new Product();
+  const fields = Object.keys(product);
   const filters: Object[] = [];
   const client = new Client(config.apiOdoo, "product.template");
   const ret = await client.searchAndReadDetail(filters, fields, offset, limit);
   return ret;
 };
 
-export const read = async (id: number): Promise<Product> => {
+export const read = async (id: number): Promise<any> => {
   const fields: Object[] = [];
   const filters = [["id", "=", id]];
 
@@ -65,7 +51,7 @@ export const read = async (id: number): Promise<Product> => {
 export const readByFieldNameString = async (
   fieldName: string,
   fieldValue: string
-): Promise<Product> => {
+): Promise<any> => {
   const fields: Object[] = [];
   const filters = [[fieldName, "=", fieldValue]];
 
@@ -79,8 +65,9 @@ export const readByFieldNameString = async (
 export const readVendorByFieldNameString = async (
   fieldName: string,
   fieldValue: string
-): Promise<Product> => {
-  const fields = ["id", "partner_id", "price", "currency_id", "delay"];
+): Promise<any> => {
+  //const fields = ["id", "partner_id", "price", "currency_id", "delay"];
+  const fields: Object[] = [];
   const filters = [[fieldName, "=", fieldValue]];
 
   const client = new Client(config.apiOdoo, "product.supplierinfo");

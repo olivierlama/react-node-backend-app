@@ -3,8 +3,6 @@
  */
 import express, { Request, Response } from "express";
 import * as ProductService from "./products.service";
-import { BaseProduct, Product } from "./product.interface";
-import { Products } from "./products.interface";
 /**
  * Router Definition
  */
@@ -34,7 +32,7 @@ productsRouter.get("/", async (req: Request, res: Response) => {
 
     // console.log("params", { offset, limit });
     console.log("query()", "start");
-    const products: Products = await ProductService.query(offset, limit);
+    const products = await ProductService.query(offset, limit);
     console.log("query()", "end");
     res.status(200).send(products);
   } catch (e: any) {
@@ -49,7 +47,7 @@ productsRouter.get("/id/:id", async (req: Request, res: Response) => {
     console.log("id", id);
 
     console.log("ProductService.read()", "start");
-    const product: Product = await ProductService.read(id);
+    const product = await ProductService.read(id);
     console.log("ProductService.read()", "end");
     res.status(200).send(product);
   } catch (e: any) {
@@ -64,53 +62,30 @@ productsRouter.get("/name/:name", async (req: Request, res: Response) => {
     console.log("name", name);
 
     console.log("ProductService.read()", "start");
-    const product: Product = await ProductService.readByFieldNameString(
-      "name",
-      name
-    );
+    const product = await ProductService.readByFieldNameString("name", name);
     console.log("ProductService.read()", "end");
     res.status(200).send(product);
   } catch (e: any) {
     res.status(500).send(e.message);
   }
 });
-
-productsRouter.get(
-  "/vendor/partner_id/:partner_id",
-  async (req: Request, res: Response) => {
-    try {
-      const partner_id = req.params.partner_id;
-      console.log("partner_id", partner_id);
-
-      console.log("ProductService.read()", "start");
-      const product: Product = await ProductService.readVendorByFieldNameString(
-        "partner_id",
-        partner_id
-      );
-      console.log("ProductService.read()", "end");
-      res.status(200).send(product);
-    } catch (e: any) {
-      res.status(500).send(e.message);
-    }
-  }
-);
-
 productsRouter.get("/vendor/id/:id", async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     console.log("id", id);
 
     console.log("ProductService.read()", "start");
-    const product: Product = await ProductService.readVendorByFieldNameString(
+    const productVendor = await ProductService.readVendorByFieldNameString(
       "id",
       id
     );
     console.log("ProductService.read()", "end");
-    res.status(200).send(product);
+    res.status(200).send(productVendor);
   } catch (e: any) {
     res.status(500).send(e.message);
   }
 });
+
 // POST items
 
 // PUT items/:id
