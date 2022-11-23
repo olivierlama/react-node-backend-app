@@ -1,13 +1,6 @@
-/**
- * Data Model Interfaces
- */
 import { BaseProduct, Product } from "./product";
 import config from "../config.json";
 import Client from "../api-client-odoo/client";
-
-/**
- * In-Memory Store
- */
 
 /**
  * Service Methods
@@ -15,6 +8,7 @@ import Client from "../api-client-odoo/client";
 
 //export const findAll = async (): Promise<Item[]> => Object.values(items);
 // Search and Read records ids = [1,2,..] with other fields
+
 export const query = async (offset = 0, limit = 0): Promise<Product[]> => {
   const product = new Product();
   const fields = Object.keys(product);
@@ -75,4 +69,21 @@ export const readVendorByFieldNameString = async (
   const ret = await client.searchAndReadDetail(filters, fields);
   console.log(ret);
   return ret;
+};
+
+export const create = async (newProduct: BaseProduct): Promise<number> => {
+  //Create records
+  console.log("Create records");
+  // const product = new BaseProduct();
+  // const fieldsValues = Object.entries(newProduct);
+  const fieldsValues = Array.of(newProduct);
+
+  console.log("fieldsValues", fieldsValues);
+
+  const client = new Client(config.apiOdoo, "product.template");
+  let id = await client.create(fieldsValues);
+  console.log(id);
+  // console.log("Read record : ", id);
+  // console.log(await client.readIds(id, fields));
+  return id;
 };

@@ -2,6 +2,7 @@
  * Required External Modules and Interfaces
  */
 import express, { Request, Response } from "express";
+import { BaseProduct } from "./product";
 import * as ProductService from "./products.service";
 /**
  * Router Definition
@@ -86,8 +87,18 @@ productsRouter.get("/vendor/id/:id", async (req: Request, res: Response) => {
   }
 });
 
-// POST items
+// POST products
+productsRouter.post("/", async (req: Request, res: Response) => {
+  try {
+    const product: BaseProduct = req.body;
 
+    const id = await ProductService.create(product);
+
+    res.status(201).json(id);
+  } catch (e: any) {
+    res.status(500).send(e.message);
+  }
+});
 // PUT items/:id
 
 // DELETE items/:id
