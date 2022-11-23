@@ -80,9 +80,9 @@ export const create = async (newProduct: BaseProduct): Promise<number> => {
 
   console.log("fieldsValues", fieldsValues);
 
-  const client = new Client(config.apiOdoo, "product.template");
+  const client = new Client(config.apiOdoo, "product.product");
   let id = await client.create(fieldsValues);
-  console.log(id);
+  console.log("id created", id);
   // console.log("Read record : ", id);
   // console.log(await client.readIds(id, fields));
   return id;

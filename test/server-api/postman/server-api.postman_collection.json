@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "ee204254-bae8-4581-a7f0-6f02be5fa789",
+		"name": "server-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "products-query",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7000/api/products?limit=1000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"products"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products-readById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7000/api/products/id/65",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"products",
+						"id",
+						"65"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products-readByName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7000/api/products/name/test1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"products",
+						"name",
+						"test1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products-readVendorById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7000/api/products/vendor/id/27",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"products",
+						"vendor",
+						"id",
+						"27"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products-create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"default_code\": \"FURN_6666\",\r\n    \"barcode\": false,\r\n    \"standard_price\": 287, \r\n    \"qty_available\": 16,\r\n    \"virtual_available\": 36,\r\n    \"name\": \"test1\",\r\n    \"list_price\": 295\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7000/api/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
