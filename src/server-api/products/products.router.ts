@@ -12,7 +12,7 @@ export const productsRouter = express.Router();
  * Controller Definitions
  */
 
-// GET products
+// GET products/
 
 productsRouter.get("/", async (req: Request, res: Response) => {
   try {
@@ -26,12 +26,6 @@ productsRouter.get("/", async (req: Request, res: Response) => {
     if (q_limit) {
       limit = parseInt("" + q_limit, 10);
     }
-    // offset = isNaN(offset) ? 0 : offset;
-    // console.log("offset", offset);
-
-    //const limit = 10;
-
-    // console.log("params", { offset, limit });
     console.log("query()", "start");
     const products = await ProductService.query(offset, limit);
     console.log("query()", "end");
@@ -41,7 +35,7 @@ productsRouter.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// GET items/:id
+// GET products/id/:id
 productsRouter.get("/id/:id", async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id, 10);
@@ -56,7 +50,7 @@ productsRouter.get("/id/:id", async (req: Request, res: Response) => {
   }
 });
 
-// GET items/:id
+// GET products/name/:name
 productsRouter.get("/name/:name", async (req: Request, res: Response) => {
   try {
     const name = req.params.name;
@@ -70,6 +64,8 @@ productsRouter.get("/name/:name", async (req: Request, res: Response) => {
     res.status(500).send(e.message);
   }
 });
+
+// GET products/vendor/id/:id
 productsRouter.get("/vendor/id/:id", async (req: Request, res: Response) => {
   try {
     const id = req.params.id;

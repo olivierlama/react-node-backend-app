@@ -7,16 +7,31 @@
 	"item": [
 		{
 			"name": "products-query",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const id=pm.response.json()[0].id\r",
+							"console.log(\"id\",id)\r",
+							"pm.collectionVariables.set(\"id\",id)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:7000/api/products?limit=1000",
-					"protocol": "http",
+					"raw": "{{server-api}}/api/products?limit=10",
 					"host": [
-						"localhost"
+						"{{server-api}}"
 					],
-					"port": "7000",
 					"path": [
 						"api",
 						"products"
@@ -24,7 +39,7 @@
 					"query": [
 						{
 							"key": "limit",
-							"value": "1000"
+							"value": "10"
 						}
 					]
 				}
@@ -33,21 +48,41 @@
 		},
 		{
 			"name": "products-readById",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:7000/api/products/id/65",
-					"protocol": "http",
+					"raw": "{{server-api}}/api/products/id/{{id}}",
 					"host": [
-						"localhost"
+						"{{server-api}}"
 					],
-					"port": "7000",
 					"path": [
 						"api",
 						"products",
 						"id",
-						"65"
+						"{{id}}"
 					]
 				}
 			},
@@ -55,21 +90,46 @@
 		},
 		{
 			"name": "products-readByName",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const tab = \"seller_ids\"\r",
+							"const sellers_ids=pm.response.json()[tab]\r",
+							"console.log(tab,sellers_ids)\r",
+							"pm.collectionVariables.set(\"seller_ids\",sellers_ids)\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:7000/api/products/name/test1",
-					"protocol": "http",
+					"raw": "{{server-api}}/api/products/name/Acoustic Bloc Screens",
 					"host": [
-						"localhost"
+						"{{server-api}}"
 					],
-					"port": "7000",
 					"path": [
 						"api",
 						"products",
 						"name",
-						"test1"
+						"Acoustic Bloc Screens"
 					]
 				}
 			},
@@ -77,22 +137,64 @@
 		},
 		{
 			"name": "products-readVendorById",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let seller_ids = pm.collectionVariables.get(\"seller_ids\");\r",
+							"\r",
+							"if(!seller_ids || seller_ids.length == 0) {\r",
+							"   console.error(\"Sellers_ids not found\")\r",
+							"    return\r",
+							"} \r",
+							"\r",
+							"let seller_id_current = seller_ids.shift();\r",
+							"console.log(\"seller_id_current\",seller_id_current)\r",
+							"pm.collectionVariables.set(\"seller_id\", seller_id_current);\r",
+							"pm.collectionVariables.set(\"seller_ids\", seller_ids);\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const seller_ids = pm.collectionVariables.get(\"seller_ids\");\r",
+							"\r",
+							"if (seller_ids && seller_ids.length > 0){\r",
+							"    postman.setNextRequest(\"products-readVendorById\");\r",
+							"} else {\r",
+							"    postman.setNextRequest(null);\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:7000/api/products/vendor/id/27",
-					"protocol": "http",
+					"raw": "{{server-api}}/api/products/vendor/id/{{seller_id}}",
 					"host": [
-						"localhost"
+						"{{server-api}}"
 					],
-					"port": "7000",
 					"path": [
 						"api",
 						"products",
 						"vendor",
 						"id",
-						"27"
+						"{{seller_id}}"
 					]
 				}
 			},
@@ -100,6 +202,19 @@
 		},
 		{
 			"name": "products-create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -113,12 +228,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:7000/api/products",
-					"protocol": "http",
+					"raw": "{{server-api}}/api/products",
 					"host": [
-						"localhost"
+						"{{server-api}}"
 					],
-					"port": "7000",
 					"path": [
 						"api",
 						"products"
@@ -126,6 +239,45 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server-api",
+			"value": "http://localhost:port",
+			"type": "default"
+		},
+		{
+			"key": "id",
+			"value": ""
+		},
+		{
+			"key": "seller_ids",
+			"value": ""
+		},
+		{
+			"key": "seller_id",
+			"value": ""
 		}
 	]
 }

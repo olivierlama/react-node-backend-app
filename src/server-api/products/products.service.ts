@@ -13,7 +13,7 @@ export const query = async (offset = 0, limit = 0): Promise<Product[]> => {
   const product = new Product();
   const fields = Object.keys(product);
   const filters: Object[] = [];
-  const client = new Client(config.apiOdoo, "product.template");
+  const client = new Client(config.apiOdoo, "product.product");
   const ret = await client.searchAndReadDetail(filters, fields, offset, limit);
   return ret;
 };
@@ -34,10 +34,10 @@ export const read = async (id: number): Promise<any> => {
   //   seller_ids.map((id) => id + 1)
   // );
 
-  for (let index = 0; index < seller_ids.length; index++) {
-    const id = seller_ids[index];
-    ret["seller_ids"][index] = await readVendorByFieldNameString("id", "" + id);
-  }
+  // for (let index = 0; index < seller_ids.length; index++) {
+  //   const id = seller_ids[index];
+  //   ret["seller_ids"][index] = await readVendorByFieldNameString("id", "" + id);
+  // }
 
   return ret;
 };
@@ -51,7 +51,8 @@ export const readByFieldNameString = async (
 
   const client = new Client(config.apiOdoo, "product.product");
   console.log("Read", { fieldName, fieldValue });
-  const ret = await client.searchAndReadDetail(filters, fields);
+  let ret = await client.searchAndReadDetail(filters, fields);
+  ret = ret[0];
   console.log(ret);
   return ret;
 };
